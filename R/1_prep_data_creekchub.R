@@ -110,6 +110,11 @@ abline(0, 1)
 p_ag <- read.csv("data/watershed_local_prop_ag.csv")
 
 
+
+# read in the fish length data
+fish_meta <- read.csv("data/creekchub_meta_data.csv")
+
+
 # remove extra files
-rm(list=setdiff(ls(), c("si_est", "p_ag")))
+rm(list=setdiff(ls(), c("si_est", "p_ag", "fish_meta")))
 

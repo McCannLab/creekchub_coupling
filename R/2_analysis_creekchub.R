@@ -23,39 +23,6 @@ si_est$tp <- 1 + ((si_est$delta15n - si_est$d15n_det)/3.4)
 ######################################################################################################################
 #data prep
 
-# read in the fish meta data
-
-fish_meta <- 
-  read.csv("data/creek_chub_data.csv") %>%
-  select(sitecode, sampleid, species, totalmm) %>%
-  filter(species == "creek chub") %>%
-  select(-species) %>%
-  filter(!is.na(sampleid)) %>%
-  filter(!sampleid == "")
-
-# fix site names
-fish_meta$sitecode <- as.character(fish_meta$sitecode)
-fish_meta[fish_meta$sitecode == "EP1", names(fish_meta) == "sitecode"] <- "P1"
-fish_meta[fish_meta$sitecode == "EP2", names(fish_meta) == "sitecode"] <- "P2"
-fish_meta[fish_meta$sitecode == "EP3", names(fish_meta) == "sitecode"] <- "P3"
-fish_meta[fish_meta$sitecode == "EP4", names(fish_meta) == "sitecode"] <- "P4"
-
-# calculate mean total length at each site (all creek chub)
-fish_meta$totalmm <- as.numeric(fish_meta$totalmm)
-
-# summarise mean lengths
-fish_meta_sum <- 
-  fish_meta %>% 
-  group_by(sitecode) %>%
-  summarise(mean_tl = mean(totalmm, na.rm = T)) 
-
-# quick summary to check
-fish_meta %>%
-  filter(!is.na(totalmm)) %>%
-  summarise(mean_tl = mean(totalmm),
-            sd_tl = sd(totalmm),
-            n = n())
-
 # join fish meta to full isotope dataset
 si_est <- 
   si_est %>%
