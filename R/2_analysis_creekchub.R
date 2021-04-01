@@ -2,9 +2,8 @@
 source("R/1_prep_data_creekchub.R")
 
 ###############################################################################################################
-# proportion terrestrial and trophic position estimates based on primary producer values
 
-# prop terrestrial energy estimation
+# calculate proportion terrestrial energy use
 si_est$ter_energy_pp <- (si_est$delta2h_cor - si_est$d2h_algae)/(si_est$d2h_det - si_est$d2h_algae)
 
 # constrain between 0-1
@@ -17,7 +16,7 @@ si_est <-
   ))
 
 
-# trophic position estimation
+# calculate trophic position
 si_est$tp <- 1 + ((si_est$delta15n - si_est$d15n_det)/3.4)
 
 ######################################################################################################################
@@ -135,7 +134,7 @@ d=
 cowplot::plot_grid(a, b, c, d, ncol = 2, labels = c("A", "B", "C", "D", label_size = 18))
 
 # save plot at tiff
-#ggsave("trophic_response.tiff", units = "in", width = 8, height = 6, dpi = 600, compression = "lzw")
+#ggsave("output/trophic_response.tiff", units = "in", width = 8, height = 6, dpi = 600, compression = "lzw")
 
 
 ###########################################################################################
@@ -148,15 +147,12 @@ si_xx <- si_x %>%
   filter(!p_ag_watershed < 0.6) 
 
 # proportion terrestrial energy vs regional ag without ~40% values
-mod_reg_terx <- lm(qlogis(prop_ter_mean) ~ p_ag_watershed + tl_mean, data = si_xx)
-summary(mod_reg_terx)
-mod_reg_terx <- update(mod_reg_terx, .~. -tl_mean)
+mod_reg_terx <- lm(qlogis(prop_ter_mean) ~ p_ag_watershed, data = si_xx)
 summary(mod_reg_terx)
 
+
 # trophic position vs regional ag without ~40% values
-mod_reg_tpx <- lm(tp ~ p_ag_watershed + tl_mean, data = si_xx)
-summary(mod_reg_tpx)
-mod_reg_tpx <- update(mod_reg_tpx, .~. -tl_mean)
+mod_reg_tpx <- lm(tp ~ p_ag_watershed, data = si_xx)
 summary(mod_reg_tpx)
 
 
@@ -169,16 +165,14 @@ si_xxx <-
   filter(!sitecode %in% c("P2", "P3"))
 
 # proportion terrestrial energy vs local ag
-mod_local_terxx <- lm(qlogis(prop_ter_mean) ~ p_ag_250 + tl_mean, data = si_xxx)
-summary(mod_local_terxx) # mean length not sig
-mod_local_terxx <- update(mod_local_terxx, .~. -tl_mean)
-summary(mod_local_terxx) # local ag sig
+mod_local_terxx <- lm(qlogis(prop_ter_mean) ~ p_ag_250, data = si_xxx)
+summary(mod_local_terxx)
 
 # proportion terrestrial energy vs regional ag
-mod_reg_terxx <- lm(qlogis(prop_ter_mean) ~ p_ag_watershed + tl_mean, data = si_xxx)
+mod_reg_terxx <- lm(qlogis(prop_ter_mean) ~ p_ag_watershed, data = si_xxx)
 summary(mod_reg_terxx)
-mod_reg_terxx <- update(mod_reg_terxx, .~. -tl_mean)
-summary(mod_reg_terxx)
+
+
 
 
 
